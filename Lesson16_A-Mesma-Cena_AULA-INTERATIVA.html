@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 16 · Quatro cenas, duas versões</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F2EFE6; --card:#FBFAF6; --line:#E5E0D2; --ink:#2B2622; --soft:#6E655C;
+  --calm:#6E8F6B; --calm-t:#E5EBE1;
+  --focus:#3A6EA5; --focus-t:#E2EAF3;
+  --trust:#2A6360; --trust-t:#DFE9E7;
+  --energy:#C0862B; --energy-t:#F5EAD6;
+  --brave:#B4553F; --brave-t:#F4E3DD;
+  --win:#4E7A55;   --win-t:#E3EDE3;
+  --create:#7A5AA0; --create-t:#EBE4F3;
+  --soft2:#8A7F72; --soft2-t:#EAE5DC;
+  --acc:var(--brave); --acc-t:var(--brave-t);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:'Poppins',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;}
+:focus-visible{outline:2.5px solid var(--acc);outline-offset:3px;border-radius:4px;}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+
+.bar{position:sticky;top:0;z-index:40;background:rgba(242,239,230,.94);backdrop-filter:blur(10px);
+ border-bottom:1.5px solid var(--line);}
+.bar-in{max-width:1060px;margin:0 auto;padding:13px 26px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.brand{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);}
+.brand b{color:var(--acc);font-weight:700;}
+.back{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--acc);font-weight:700;display:none;}
+.back.on{display:inline-block;}
+.ctrl{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.ctrl label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);}
+.ctrl select{font-family:'Poppins',sans-serif;font-size:12.5px;padding:6px 10px;border-radius:8px;
+ border:1.5px solid var(--line);background:var(--card);max-width:180px;}
+.rate{display:flex;gap:4px;}
+.rate button{font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;padding:6px 9px;
+ border-radius:7px;border:1.5px solid var(--line);background:var(--card);color:var(--soft);}
+.rate button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff;}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 26px 90px;}
+.hero{padding:56px 0 34px;}
+.eyebrow{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.26em;text-transform:uppercase;
+ color:var(--brave);font-weight:700;}
+.hero h1{font-family:'Lora',serif;font-size:clamp(38px,6.4vw,64px);line-height:1.04;font-weight:700;
+ letter-spacing:-1.4px;margin-top:14px;}
+.hero h1 em{font-style:normal;color:var(--trust);}
+.hero p{font-size:18px;line-height:1.6;color:var(--soft);margin-top:16px;max-width:620px;}
+.howto{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px;}
+.chip{background:var(--card);border:1.5px solid var(--line);border-radius:100px;padding:9px 17px;
+ font-size:14px;color:var(--soft);}
+.chip b{color:var(--ink);font-weight:600;}
+.warn{background:var(--energy-t);border:1.5px solid var(--energy);border-radius:12px;padding:14px 18px;
+ font-size:14px;color:#6a4a12;margin-top:16px;display:none;}
+.warn.on{display:block;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:8px;}
+.tk{display:flex;text-align:left;border:2px solid var(--ink);border-radius:18px;overflow:hidden;
+ background:var(--card);transition:transform .18s,box-shadow .18s;width:100%;}
+.tk:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(43,38,34,.13);}
+.tk-main{display:block;flex:1;padding:24px 24px 22px;min-width:0;}
+.tk-stub{width:52px;flex:none;border-left:2.5px dashed var(--ink);background:var(--acc-t);
+ display:flex;align-items:center;justify-content:center;}
+.tk-stub span{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--acc);
+ writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.2em;}
+.tk-kick{display:block;font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.16em;
+ text-transform:uppercase;color:var(--acc);font-weight:700;}
+.tk h2{font-family:'Lora',serif;font-size:26px;line-height:1.18;font-weight:700;margin:8px 0 8px;letter-spacing:-.3px;}
+.tk-sub{display:block;font-size:14.5px;line-height:1.5;color:var(--soft);}
+.tk-meta{display:block;margin-top:14px;padding-top:12px;border-top:1.5px dashed var(--line);
+ font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:var(--soft);text-transform:uppercase;}
+
+/* story page */
+.shead{padding:40px 0 6px;}
+.shead .tk-kick{color:var(--acc);}
+.shead h1{font-family:'Lora',serif;font-size:clamp(32px,5vw,50px);line-height:1.06;font-weight:700;
+ letter-spacing:-1px;margin-top:10px;}
+.shead p{font-size:17px;color:var(--soft);margin-top:10px;}
+
+.howto{background:var(--card);border:1.5px solid var(--acc);border-radius:15px;
+ padding:18px 22px;margin-top:22px;}
+.howto .ht{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+ color:var(--acc);font-weight:700;margin-bottom:11px;}
+.howto ol{margin:0;padding-left:20px;}
+.howto li{font-size:15px;line-height:1.65;color:var(--ink);margin-bottom:4px;}
+.howto li b{font-weight:600;}
+.vhead{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin:22px 0 10px;}
+.vtag{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+ font-weight:700;color:var(--acc);}
+.vhead.va2 .vtag{color:#8A7F72;}
+.vhead .playa{background:#8A7F72;}
+.vhead .gha{border-color:#8A7F72;color:#8A7F72;}
+.va2box .dt{color:#6E655C;}
+.va2box .dline.you .dt{color:#6E655C;font-weight:400;}
+.va2box .dline.you .dw{color:#8A7F72;}
+.va2box .dline:hover{background:#EFE9E2;}
+.va2box .dline.on{background:#EFE9E2;box-shadow:0 0 0 2px #8A7F72;}
+.cmp{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:16px;}
+.cmp .m{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--acc);font-weight:700;margin-bottom:13px;}
+.vrow{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;width:100%;text-align:left;
+ border-radius:12px;padding:13px 15px;transition:.15s;}
+.vrow .lab{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;flex:none;width:22px;padding-top:2px;}
+.vrow .vt{font-family:'Lora',serif;font-size:17.5px;line-height:1.5;flex:1;}
+.vrow.va{background:#EFE9E2;}
+.vrow.va .lab{color:#8A7F72;}
+.vrow.va .vt{color:#6E655C;}
+.vrow.vb{background:var(--acc-t);}
+.vrow.vb .lab{color:var(--acc);}
+.vrow.vb .vt{color:var(--ink);font-weight:600;}
+.vrow.on{box-shadow:0 0 0 2px currentColor;}
+.vrow.va.on{box-shadow:0 0 0 2px #8A7F72;}
+.vrow.vb.on{box-shadow:0 0 0 2px var(--acc);}
+.whybox{margin-top:6px;}
+.whybox .w{background:#F7E7A0;border-radius:10px;padding:13px 16px;font-size:14px;line-height:1.6;color:#4A3B08;}
+.whybox .w b{font-weight:600;}
+.task{background:var(--card);border:1.5px solid var(--line);border-radius:15px;padding:18px 22px;margin-bottom:12px;}
+.task .p{font-family:'Lora',serif;font-size:20px;line-height:1.4;}
+.task .pt{font-size:14px;color:var(--soft);line-height:1.5;}
+.task .rev{margin-top:12px;}
+.player{background:var(--acc-t);border-radius:18px;padding:22px 24px;margin-top:26px;
+ display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.play{display:flex;align-items:center;gap:12px;background:var(--acc);color:#fff;border-radius:100px;
+ padding:14px 26px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.12em;
+ text-transform:uppercase;}
+.play svg{width:15px;height:15px;fill:currentColor;}
+.ghost{border:1.5px solid var(--acc);color:var(--acc);border-radius:100px;padding:12px 20px;
+ font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;}
+.ghost[aria-pressed="true"]{background:var(--acc);color:#fff;}
+.pnote{font-size:13.5px;color:var(--soft);line-height:1.5;flex:1;min-width:220px;}
+
+.text{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:30px 34px;margin-top:18px;}
+.text.hidden{display:none;}
+.text p{font-family:'Lora',serif;font-size:20.5px;line-height:1.68;}
+.text p + p{margin-top:14px;}
+.sent{cursor:pointer;border-radius:5px;padding:1px 2px;transition:background .12s;}
+.sent:hover{background:var(--acc-t);}
+.sent.on{background:var(--acc-t);box-shadow:0 0 0 2px var(--acc);}
+.text mark{background:var(--acc-t);color:var(--ink);padding:1px 3px;border-radius:3px;}
+.blur{filter:blur(5px);user-select:none;}
+.dline{display:flex;gap:14px;align-items:baseline;padding:9px 10px;border-radius:9px;cursor:pointer;flex-wrap:wrap;}
+.dline:hover{background:var(--acc-t);}
+.dline.on{background:var(--acc-t);box-shadow:0 0 0 2px var(--acc);}
+.dline.turn{background:#F7E7A0;box-shadow:0 0 0 2px #C0862B;}
+.dline.turn .dt::after{content:" ← sua vez";font-family:'Space Mono',monospace;font-size:11px;
+ letter-spacing:.1em;color:#8A6D14;font-weight:700;}
+.dline .dw{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--soft);width:74px;flex:none;font-weight:700;padding-top:5px;}
+.dline.you .dw{color:var(--acc);}
+.dline .dt{font-family:'Lora',serif;font-size:19px;line-height:1.45;flex:1;min-width:0;}
+.dline.you .dt{color:var(--acc);font-weight:600;}
+.dline .dn{font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+ color:#8A6D14;background:#F7E7A0;border-radius:5px;padding:3px 8px;align-self:center;}
+
+.qs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:18px;}
+.qc{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:17px 20px;
+ display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;}
+.qc:hover{border-color:var(--acc);}
+.qc.on{border-color:var(--acc);background:var(--acc-t);}
+.qn{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--acc);flex:none;padding-top:3px;}
+.qt{font-family:'Lora',serif;font-size:18px;line-height:1.4;}
+.ph{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--acc);font-weight:700;margin:34px 0 10px;}
+
+/* retell */
+.two{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;}
+.pane{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:26px 28px;}
+.pane.acc{border-color:var(--acc);}
+.pane h3{font-family:'Lora',serif;font-size:23px;font-weight:700;margin-bottom:12px;}
+.pane li{font-family:'Lora',serif;font-size:19px;line-height:1.95;list-style:none;}
+.pane .note{font-size:15px;line-height:1.6;color:var(--soft);margin-top:14px;}
+.pane .note b{color:var(--ink);font-weight:600;}
+
+/* drills */
+.drill{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:26px;margin-bottom:18px;}
+.src{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+ color:var(--soft);font-weight:700;}
+.stage{margin:14px 0 16px;display:flex;align-items:center;gap:14px;background:var(--acc-t);
+ border-radius:13px;padding:18px 20px;cursor:pointer;}
+.spk{flex:none;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--acc);color:var(--acc);
+ display:flex;align-items:center;justify-content:center;}
+.spk svg{width:15px;height:15px;fill:currentColor;}
+.stage.playing .spk{background:var(--acc);color:#fff;}
+.stage.on .spk{background:var(--acc);color:#fff;}
+.stage.on{box-shadow:0 0 0 2px var(--acc);}
+.stage-txt{font-family:'Lora',serif;font-size:clamp(19px,2.2vw,23px);line-height:1.4;font-weight:600;flex:1;}
+.stage-txt .hl{color:var(--acc);border-bottom:2.5px solid var(--acc);}
+.stage-txt .new{color:var(--acc);}
+.cues{display:flex;flex-wrap:wrap;gap:9px;}
+.cue{font-family:'Lora',serif;font-size:17px;padding:9px 16px;border-radius:9px;
+ border:1.5px solid var(--line);background:var(--cream);}
+.cue:hover{border-color:var(--acc);}
+.cue[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff;}
+.hint{font-size:13px;color:var(--soft);margin-top:13px;}
+
+.foot{margin-top:56px;padding-top:24px;border-top:1.5px solid var(--line);
+ font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+ color:var(--soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+@media (max-width:720px){
+  .wrap{padding:0 18px 70px;}
+  .two{grid-template-columns:1fr;}
+  .text{padding:24px 22px;}
+  .text p{font-size:19px;}
+  .ctrl{width:100%;margin-left:0;}
+  .ctrl select{flex:1;max-width:none;}
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <button class="back" id="back">&larr; Início</button>
+    <span class="brand"><b>Aula 16</b> · quatro cenas, duas versões</span>
+    <div class="ctrl">
+      <label for="voicesel">Voz</label>
+      <select id="voicesel"></select>
+      <div class="rate" role="group" aria-label="Velocidade">
+        <button data-rate="0.8" aria-pressed="false">0.8×</button>
+        <button data-rate="0.9" aria-pressed="true">0.9×</button>
+        <button data-rate="1" aria-pressed="false">1×</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="cover">
+    <div class="hero">
+      <div class="eyebrow">Teacher Débora · Lesson 16</div>
+      <h1>A mesma cena,<br><em>dois resultados</em></h1>
+      <p>Quatro cenas da sua viagem, cada uma em duas versões: a que não funciona e a que funciona. Em nenhuma delas o inglês é mais difícil — só o jeito muda. Tudo aqui você faz sozinha.</p>
+      <div class="howto">
+        <span class="chip">🎧 <b>Tudo sozinha</b> — siga as instruções do bloco</span>
+        <span class="chip">🗣 <b>Fale antes</b> de revelar a resposta</span>
+        <span class="chip">🗣 <b>Responda curto</b> — duas palavras basta</span>
+      </div>
+      <div class="warn" id="warn">Seu navegador não tem voz em inglês instalada. No computador, o Chrome costuma resolver.</div>
+    </div>
+    <div class="grid" id="cards"></div>
+    <div class="foot"><span>Orlando · intensivo</span><span>Ouvir &gt; ler · falar &gt; entender</span></div>
+  </section>
+
+  <section id="page" hidden></section>
+</main>
+
+<script>
+/* ---------------- DATA ---------------- */
+const S = [
+{
+ id:1, num:"01", theme:"calm", title:"Falando primeiro", sub:"Seis perguntas — você só fala",
+ kind:"drillq",
+ howto:["Toque na pergunta para ouvir.","Responda em voz alta, o mais longo que conseguir.","Não pare para se corrigir no meio.","Depois toque em <b>Mostrar respostas</b> para ver o que valia incluir."],
+ items:[
+  {q:"Which worries you most: the pharmacy, the driver, the bill, or immigration?", a:"Escolha uma e diga por quê. Depois diga qual te preocupa menos, e por quê."},
+  {q:"Tell me about a time you bought the wrong thing because you couldn't explain what you needed.", a:"Conte inteiro: o que você precisava, o que saiu, e o que aconteceu depois."},
+  {q:"When you don't know a word, what do you do — guess, describe it, or give up?", a:"Resposta honesta. E o que costuma funcionar melhor."},
+  {q:"Have you ever paid for something you knew was wrong, just to end the conversation?", a:"Quanto custou. E o que você diria hoje."},
+  {q:"Why do you think short answers work better at immigration?", a:"Essa você já sabe. Explique com suas palavras."},
+  {q:"Three weeks from now you'll be there. What do you already feel ready for?", a:"Resposta longa. Aproveite para falar bastante."}
+ ],
+ paras:[], marks:[], qs:[]
+},
+{
+ id:2, num:"02", theme:"win", title:"Cena 01 — a farmácia", sub:"Ela não sabe o nome do produto",
+ kind:"pair",
+ howto:["Toque em <b>Ouvir versão A</b> e ouça inteira.","Diga em voz alta: <b>o que ela levou para casa?</b>","Toque em <b>Ouvir versão B</b> e compare.","Abra <b>O que mudou</b> só depois de tentar explicar sozinha.","<b>Modo resposta:</b> só o atendente fala — você diz as falas dela nos silêncios."],
+ a:[
+  {w:"Pharmacist", t:"Hi, can I help you?"},
+  {w:"You", t:"Um, hi. Sorry. I need a medicine, please."},
+  {w:"Pharmacist", t:"What kind?"},
+  {w:"You", t:"Sorry, I don't know the name in English. Any medicine is fine."},
+  {w:"Pharmacist", t:"Well… for pain? For a cold?"},
+  {w:"You", t:"Yes, okay. Thank you."},
+  {w:"Pharmacist", t:"This one's for a cold, then."},
+  {w:"You", t:"Okay. Thank you, sorry."}
+ ],
+ b:[
+  {w:"Pharmacist", t:"Hi, can I help you?"},
+  {w:"You", t:"Yes — do you have anything for sunburn? Something that isn't greasy.", note:"diz para o que serve"},
+  {w:"Pharmacist", t:"Sure. Aloe gel, or a lotion?"},
+  {w:"You", t:"Whichever stings less. My shoulders are pretty raw.", note:"dá o critério dela"},
+  {w:"Pharmacist", t:"The gel, then. This one's cool to the touch."},
+  {w:"You", t:"Perfect. Is it okay to put on before bed?", note:"checa antes de sair"},
+  {w:"Pharmacist", t:"Absolutely. Reapply in the morning."},
+  {w:"You", t:"Great — I'll take it. Thank you."}
+ ],
+ why:"Ela não sabia o nome do produto <b>nas duas versões</b>. A diferença não é vocabulário: na A ela pede desculpa e entrega a decisão (<i>any medicine is fine</i>), e sai com remédio de resfriado para uma queimadura de sol. Na B ela <b>diz para o que serve</b> — quatro palavras, <i>anything for sunburn</i> — e o atendente faz o resto. Depois ainda dá um critério (<i>whichever stings less</i>) e confere o uso. Zero desculpas.",
+ paras:[], marks:[], qs:[]
+},
+{
+ id:3, num:"03", theme:"focus", title:"Cena 02 — o motorista", sub:"Ele ligou e ela não se localizou",
+ kind:"pair",
+ howto:["Ouça a versão A inteira.","Diga em voz alta: <b>por que a corrida foi cancelada?</b>","Ouça a versão B e compare.","Abra <b>O que mudou</b> depois de tentar explicar.","Faça o <b>Modo resposta</b> na versão B duas vezes."],
+ a:[
+  {w:"Driver", t:"Hello? I'm outside."},
+  {w:"You", t:"Sorry? Hello?"},
+  {w:"Driver", t:"I'm outside. Where are you?"},
+  {w:"You", t:"Sorry, I don't understand. I am… here?"},
+  {w:"Driver", t:"Where's here, ma'am?"},
+  {w:"You", t:"Sorry. Um. Outside. Sorry."},
+  {w:"Driver", t:"…I'm going to have to cancel. Sorry."}
+ ],
+ b:[
+  {w:"Driver", t:"Hello? I'm outside."},
+  {w:"You", t:"Hi — I'm right by the main entrance, next to the ticket booth. Where are you?", note:"diz onde está, em uma frase"},
+  {w:"Driver", t:"I'm on the other side, by the bus lane."},
+  {w:"You", t:"I think the pin dropped on the wrong side. Stay where you are — I'll come to you.", note:"nomeia a causa e resolve"},
+  {w:"Driver", t:"Okay. Black SUV, plate ends in forty-two."},
+  {w:"You", t:"Got it. Two minutes.", note:"curto e confirmado"},
+  {w:"Driver", t:"No rush."}
+ ],
+ why:"Na versão A ela responde <i>outside</i> — que num aeroporto não é informação nenhuma. Três <i>sorry</i> e a corrida é cancelada. Na B, a primeira fala já traz uma <b>referência física</b> (<i>next to the ticket booth</i>) e devolve a pergunta. Depois ela <b>nomeia a causa</b> (<i>the pin dropped on the wrong side</i>) e <b>resolve em vez de esperar</b>: <i>I'll come to you</i>.",
+ paras:[], marks:[], qs:[]
+},
+{
+ id:4, num:"04", theme:"brave", title:"Cena 03 — a conta no check-out", sub:"O jantar cobrado duas vezes",
+ kind:"pair",
+ howto:["Ouça a versão A inteira.","Diga em voz alta: <b>quanto ela pagou a mais?</b>","Ouça a versão B e compare.","Abra <b>O que mudou</b>.","<b>Modo resposta</b> na versão B — essa é a mais importante de treinar."],
+ a:[
+  {w:"Front desk", t:"Checking out? Here's your total."},
+  {w:"You", t:"Um. Sorry. I think… there is a dinner? Twice?"},
+  {w:"Front desk", t:"It shows on the folio."},
+  {w:"You", t:"Oh. Okay. Sorry."},
+  {w:"Front desk", t:"So, card on file?"},
+  {w:"You", t:"Yes. Thank you. Sorry."}
+ ],
+ b:[
+  {w:"Front desk", t:"Checking out? Here's your total."},
+  {w:"You", t:"Thanks. There seems to be a double charge — the Tuesday dinner appears twice.", note:"o fato, com o detalhe"},
+  {w:"Front desk", t:"It shows on the folio."},
+  {w:"You", t:"I understand, but I only ate there once. Could you check with the restaurant?", note:"reconhece e mantém"},
+  {w:"Front desk", t:"Give me a moment… You're right, it was posted twice. I've taken one off."},
+  {w:"You", t:"Thank you. Could you email me the corrected receipt?", note:"formaliza"},
+  {w:"Front desk", t:"Of course."},
+  {w:"You", t:"I appreciate you sorting it out.", note:"fecha reconhecendo"}
+ ],
+ why:"As duas versões <b>viram o erro</b>. Na A ela transforma o fato em pergunta (<i>there is a dinner? twice?</i>), aceita <i>it shows on the folio</i> como resposta final, e paga. Na B ela diz o fato com o detalhe (<i>the Tuesday dinner appears twice</i>) e, ao ouvir a mesma desculpa, responde <b>I understand, but</b> e pede a verificação. Mesma cena, sessenta dólares de diferença.",
+ paras:[], marks:[], qs:[]
+},
+{
+ id:5, num:"05", theme:"trust", title:"Cena 04 — a imigração", sub:"A mesma pergunta, duas respostas",
+ kind:"pair",
+ howto:["Ouça a versão A inteira.","Diga em voz alta: <b>por que ela foi mandada para a sala ao lado?</b>","Ouça a versão B e conte quantos segundos leva.","Abra <b>O que mudou</b>.","<b>Modo resposta</b> na versão B, três vezes, até sair automático."],
+ a:[
+  {w:"Officer", t:"What's the purpose of your trip?"},
+  {w:"You", t:"Ah, hello. So, we are going to Orlando, because my daughter, she always wanted to see Disney, and we saved for two years, and also my husband has never been to the United States, so—"},
+  {w:"Officer", t:"Ma'am. Business or pleasure?"},
+  {w:"You", t:"Oh! Sorry. Pleasure. Sorry."},
+  {w:"Officer", t:"How long?"},
+  {w:"You", t:"Um, ten nights, I think? Maybe eleven. I have to check. Sorry."},
+  {w:"Officer", t:"Step over here, please."}
+ ],
+ b:[
+  {w:"Officer", t:"What's the purpose of your trip?"},
+  {w:"You", t:"Tourism.", note:"uma palavra"},
+  {w:"Officer", t:"How long are you staying, and where?"},
+  {w:"You", t:"Ten nights, at the Hilton in Orlando.", note:"as duas respostas, sem enfeite"},
+  {w:"Officer", t:"Who's with you?"},
+  {w:"You", t:"My husband and my daughter."},
+  {w:"Officer", t:"Any food?"},
+  {w:"You", t:"Just coffee and chocolate."},
+  {w:"Officer", t:"You're all set. Enjoy your stay."}
+ ],
+ why:"Aqui a versão A não tem <b>nenhum erro de inglês</b> — e é a pior das quatro. Contar a história inteira levanta pergunta em vez de encerrar, e <i>maybe eleven, I have to check</i> soa a quem não sabe o próprio plano. Resultado: <i>step over here</i>. A versão B responde <b>exatamente o que foi perguntado</b> e acaba em noventa segundos. <b>Resposta curta não é inglês pobre — é o registro certo daquele balcão.</b>",
+ paras:[], marks:[], qs:[]
+},
+{
+ id:6, num:"06", theme:"energy", title:"Contando depois", sub:"A mesma viagem, dois relatos",
+ kind:"compare",
+ howto:["Toque em <b>A</b> e ouça.","Toque em <b>B</b> e ouça a mesma coisa contada bem.","Abra <b>O que mudou</b> e leia.","Depois <b>conte a versão B de memória</b>, em voz alta, sem olhar. Uma vez só."],
+ items:[
+  {m:"How was the trip?",
+   a:"It was good, I think. There were some problems but it's fine. The hotel was okay. I don't know, it was a lot. But good. Yes.",
+   b:"It was great, honestly — but the first two days were a mess. The room wasn't what we booked, my bag didn't turn up until the second night, and I got a sunburn on day one. After that it was perfect.",
+   why:"A versão A não entrega informação nenhuma e encerra a conversa: quem ouviu não tem o que perguntar. A B tem <b>três fatos concretos e um veredito</b>, e abre cinco conversas possíveis. Repare no <i>honestly</i> e no <i>but</i> — é assim que se conta perrengue sem reclamar."},
+  {m:"What happened with the room?",
+   a:"They gave us a different room, I don't know why. Maybe my mistake. It was fine in the end, I think. It's complicated.",
+   b:"They'd put us in a standard double instead of the king we booked. I showed them the confirmation and they moved us the next morning, and took the first night off the bill.",
+   why:"<b>Maybe my mistake</b> é o hábito da aula passada aparecendo de novo. A versão B conta em três movimentos — o que estava errado, o que ela fez, o que resultou — que é a mesma estrutura das escadas de extension treinadas o mês inteiro."}
+ ],
+ paras:[], marks:[], qs:[]
+},
+{
+ id:7, num:"07", theme:"create", title:"Reta final", sub:"Onde você está, e o que falta",
+ kind:"task", revealLabel:"Ver o que é estar pronta",
+ howto:["Leia a tarefa.","<b>Faça em voz alta, agora</b>, sem preparar. Uma vez só.","Toque em <b>Ver o que é estar pronta</b> e compare com o que saiu.","Anote mentalmente: saiu inteiro, saiu picado, ou não saiu? Essas três respostas decidem as próximas quatro aulas."],
+ items:[
+  {p:"Diga que não entendeu e peça para repetirem — de três formas diferentes.", a:"Sorry? · I didn't catch that. · Could you say that again, a bit slower? — Pronta se as três saem sem pensar, em menos de dois segundos cada."},
+  {p:"Peça algo na farmácia sem saber o nome do produto.", a:"Do you have anything for [sunburn]? Something that [isn't greasy]. — Pronta se você começa pelo <i>para o que serve</i> em vez de procurar a palavra."},
+  {p:"Reclame de um problema no quarto usando os quatro movimentos, seguidos.", a:"Sorry to bother you — the AC hasn't worked since we checked in. Could you take a look? · Is there someone else I could talk to? — Pronta se os quatro saem numa respirada só."},
+  {p:"Aponte uma cobrança errada e não aceite a primeira resposta.", a:"There seems to be a double charge — the Tuesday dinner appears twice. · I understand, but I only ate there once. Could you check with the restaurant? — Pronta se o segundo movimento sai automático."},
+  {p:"Responda as seis perguntas da imigração, curto, sem pausa.", a:"Tourism. · Ten nights, at the Hilton in Orlando. · My husband and my daughter. · I'm an engineer. · Yes, in 2005. · Just coffee and chocolate. — Pronta se levar menos de noventa segundos."},
+  {p:"Diga ao motorista onde você está e resolva a confusão do mapa.", a:"I'm right by the main entrance, next to the ticket booth. · I think the pin dropped on the wrong side — stay where you are, I'll come to you. — Pronta se você dá uma referência física, não só <i>outside</i>."},
+  {p:"Peça opções num balcão de aeroporto, e ofereça alguma flexibilidade.", a:"I know it's out of your hands — what are my options? · I'm flexible on timing. · Would it help if I took a later flight? — Pronta se você pergunta antes de reclamar."},
+  {p:"Registre uma mala que não chegou e resolva a noite de hoje.", a:"I waited until the belt stopped and it never came out. Here's my baggage tag. · Can I get a reference number? · What am I supposed to do in the meantime? — Pronta se as duas últimas perguntas saem sem lembrete."},
+  {p:"Recuse alguma coisa três vezes, cada vez mais firme.", a:"No, thank you. · I'll pass, thanks. · That's not going to work for me. — Pronta se a terceira não vem com pedido de desculpa colado."},
+  {p:"Conte um perrengue da viagem em um minuto, com fato, ação e veredito.", a:"They'd put us in a standard instead of the king we booked. I showed them the confirmation, they moved us the next morning and took the first night off the bill. — Pronta se você conta sem se culpar e sem <i>it's complicated</i>."}
+ ],
+ paras:[], marks:[], qs:[]
+}
+];
+
+const DRILLS = [
+ {src:"Cena 01 · farmácia", base:"Do you have anything for sunburn? Something that isn't greasy.", slot:"something that isn't greasy",
+  cues:[
+   {c:"something that won't sting", f:"Do you have anything for sunburn? Something that won't sting."},
+   {c:"something I can use on my face", f:"Do you have anything for sunburn? Something I can use on my face."},
+   {c:"something for a child", f:"Do you have anything for sunburn? Something for a child."},
+   {c:"something that works overnight", f:"Do you have anything for sunburn? Something that works overnight."}]},
+ {src:"Cena 02 · onde você está", base:"I'm right by the main entrance, next to the ticket booth.", slot:"next to the ticket booth",
+  cues:[
+   {c:"across from the bus lane", f:"I'm right by the main entrance, across from the bus lane."},
+   {c:"just past the crossing", f:"I'm right by the main entrance, just past the crossing."},
+   {c:"under the blue sign", f:"I'm right by the main entrance, under the blue sign."},
+   {c:"by the taxi line", f:"I'm right by the main entrance, by the taxi line."}]},
+ {src:"Cena 02 · resolver", base:"Stay where you are — I'll come to you.", slot:"I'll come to you",
+  cues:[
+   {c:"I'll walk over", f:"Stay where you are — I'll walk over."},
+   {c:"I'll find you", f:"Stay where you are — I'll find you."},
+   {c:"I'll be there in two minutes", f:"Stay where you are — I'll be there in two minutes."},
+   {c:"I'll cross over to your side", f:"Stay where you are — I'll cross over to your side."}]},
+ {src:"Cena 03 · o fato", base:"There seems to be a double charge — the Tuesday dinner appears twice.", slot:"the Tuesday dinner appears twice",
+  cues:[
+   {c:"the minibar is on here twice", f:"There seems to be a double charge — the minibar is on here twice."},
+   {c:"the resort fee is listed for four nights", f:"There seems to be a double charge — the resort fee is listed for four nights."},
+   {c:"the deposit hasn't come off", f:"There seems to be a double charge — the deposit hasn't come off."},
+   {c:"the parking is on there twice", f:"There seems to be a double charge — the parking is on there twice."}]},
+ {src:"Cena 03 · segurar", base:"I understand, but I only ate there once. Could you check with the restaurant?", slot:"check with the restaurant",
+  cues:[
+   {c:"look at the itemized bill", f:"I understand, but I only ate there once. Could you look at the itemized bill?"},
+   {c:"take another look", f:"I understand, but I only ate there once. Could you take another look?"},
+   {c:"have a word with the kitchen", f:"I understand, but I only ate there once. Could you have a word with the kitchen?"},
+   {c:"pull up the receipt", f:"I understand, but I only ate there once. Could you pull up the receipt?"}]},
+ {src:"Cena 04 · imigração", base:"Ten nights, at the Hilton in Orlando.", slot:"Ten nights",
+  cues:[
+   {c:"Two weeks", f:"Two weeks, at the Hilton in Orlando."},
+   {c:"Until the twenty-second", f:"Until the twenty-second, at the Hilton in Orlando."},
+   {c:"Just five days", f:"Just five days, at the Hilton in Orlando."},
+   {c:"A bit over a week", f:"A bit over a week, at the Hilton in Orlando."}]}
+];
+
+/* ---------------- AUDIO ---------------- */
+const synth = window.speechSynthesis;
+let voices=[], voice=null, rate=0.9, queue=[], qi=0, stopped=false;
+const PREF=[/google (us|uk) english/i,/microsoft (aria|jenny|guy|libby|sonia)/i,/samantha/i,/^ava/i,/allison/i,
+ /english \(united states\)/i,/^alex$/i,/daniel/i,/karen/i];
+function score(v){ if(!/^en/i.test(v.lang)) return -1;
+  let s=/en[-_]us/i.test(v.lang)?40:20;
+  if(/natural|neural|enhanced|premium/i.test(v.name)) s+=30;
+  PREF.forEach((re,i)=>{ if(re.test(v.name)) s+=30-i; });
+  if(v.localService) s+=4; return s; }
+function loadVoices(){
+  voices=synth.getVoices().filter(v=>/^en/i.test(v.lang));
+  const sel=document.getElementById('voicesel');
+  if(!voices.length){ sel.innerHTML='<option>—</option>';
+    setTimeout(()=>{ if(!voices.length) document.getElementById('warn').classList.add('on'); },2500); return; }
+  document.getElementById('warn').classList.remove('on');
+  voices.sort((a,b)=>score(b)-score(a));
+  sel.innerHTML=voices.map((v,i)=>`<option value="${i}">${v.name.replace(/microsoft |google /i,'')} · ${v.lang}</option>`).join('');
+  const saved=localStorage.getItem('l16_voice');
+  const idx=saved!==null&&voices[saved]?+saved:0;
+  sel.value=idx; voice=voices[idx];
+}
+synth.addEventListener('voiceschanged',loadVoices); loadVoices();
+document.getElementById('voicesel').addEventListener('change',e=>{
+  voice=voices[e.target.value]; localStorage.setItem('l16_voice',e.target.value);
+  say('Alright. Let\u2019s begin.');
+});
+document.querySelectorAll('.rate button').forEach(b=>b.addEventListener('click',()=>{
+  rate=+b.dataset.rate;
+  document.querySelectorAll('.rate button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+}));
+
+function utter(t){
+  const u=new SpeechSynthesisUtterance(t.replace(/[—–]/g,',').replace(/\u2026/g,'...'));
+  if(voice) u.voice=voice;
+  u.lang=voice?voice.lang:'en-US'; u.rate=rate; return u;
+}
+function stopAll(){ stopped=true; queue=[]; synth.cancel();
+  document.querySelectorAll('.sent.on,.stage.playing').forEach(e=>e.classList.remove('on','playing')); }
+function say(t, el){
+  stopAll(); stopped=false;
+  const u=utter(t);
+  if(el){ el.classList.add(el.classList.contains('stage')?'playing':'on');
+    u.onend=u.onerror=()=>el.classList.remove('on','playing'); }
+  synth.speak(u);
+}
+function sayAll(items){   // [{text, el}]
+  stopAll(); stopped=false; queue=items; qi=0; next();
+}
+function next(){
+  if(stopped||qi>=queue.length){ return; }
+  const item=queue[qi];
+  if(item.gap){
+    if(item.el){ item.el.classList.add('turn'); }
+    setTimeout(()=>{ if(item.el) item.el.classList.remove('turn');
+      if(!stopped){ qi++; next(); } }, item.gap);
+    return;
+  }
+  const {text,el}=item;
+  const u=utter(text);
+  if(el) el.classList.add('on');
+  u.onend=()=>{ if(el) el.classList.remove('on'); qi++; next(); };
+  u.onerror=()=>{ if(el) el.classList.remove('on'); qi++; next(); };
+  synth.speak(u);
+}
+
+/* ---------------- HELPERS ---------------- */
+const SPK=`<span class="spk"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 00-2.5-4v8a4.5 4.5 0 002.5-4z"/></svg></span>`;
+const PLAYICO=`<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function markUp(sent, marks){
+  let out=esc(sent);
+  marks.forEach(m=>{ const e=esc(m);
+    if(out.includes(e)) out=out.replace(e,'<mark>'+e+'</mark>'); });
+  return out;
+}
+function diff(prev,next){
+  if(!prev) return esc(next);
+  const norm=w=>w.toLowerCase().replace(/[.,;:!?—–]/g,'');
+  const pw=prev.split(/\s+/), nw=next.split(/\s+/);
+  let i=0; while(i<pw.length&&i<nw.length&&norm(pw[i])===norm(nw[i])) i++;
+  if(i===0||i>=nw.length) return esc(next);
+  return esc(nw.slice(0,i).join(' '))+' <span class="new">'+esc(nw.slice(i).join(' '))+'</span>';
+}
+function hlBase(d){
+  const i=d.base.indexOf(d.slot);
+  if(i<0) return esc(d.base);
+  return esc(d.base.slice(0,i))+'<span class="hl">'+esc(d.slot)+'</span>'+esc(d.base.slice(i+d.slot.length));
+}
+
+/* ---------------- COVER ---------------- */
+const cards=[
+ {id:'s1', theme:'calm',   kick:'Bloco 01', title:'Falando primeiro', sub:'Seis perguntas — você só fala', meta:'produção livre', stub:'01'},
+ {id:'s2', theme:'win',    kick:'Cena 01', title:'A farmácia', sub:'Ela não sabe o nome do produto', meta:'duas versões · modo resposta', stub:'02'},
+ {id:'s3', theme:'focus',  kick:'Cena 02', title:'O motorista', sub:'Ele ligou e ela não se localizou', meta:'duas versões · modo resposta', stub:'03'},
+ {id:'s4', theme:'brave',  kick:'Cena 03', title:'A conta no check-out', sub:'O jantar cobrado duas vezes', meta:'duas versões · modo resposta', stub:'04'},
+ {id:'s5', theme:'trust',  kick:'Cena 04', title:'A imigração', sub:'A mesma pergunta, duas respostas', meta:'duas versões · modo resposta', stub:'05'},
+ {id:'s6', theme:'energy', kick:'Bloco 06', title:'Contando depois', sub:'A mesma viagem, dois relatos', meta:'2 comparações', stub:'06'},
+ {id:'s7', theme:'create', kick:'Bloco 07', title:'Reta final', sub:'Onde você está, e o que falta nas últimas quatro aulas', meta:'10 tarefas · autoavaliação falada', stub:'07'},
+ {id:'drills', theme:'focus', kick:'Substitution', title:'Seis bases das versões B', sub:'As frases que funcionaram', meta:'6 drills · 24 frases', stub:'08'}
+];
+document.getElementById('cards').innerHTML=cards.map(c=>`
+ <button class="tk" data-go="${c.id}" style="--acc:var(--${c.theme});--acc-t:var(--${c.theme}-t)">
+   <span class="tk-main">
+     <span class="tk-kick">${c.kick}</span>
+     <h2>${esc(c.title)}</h2>
+     <span class="tk-sub">${esc(c.sub)}</span>
+     <span class="tk-meta">${c.meta}</span>
+   </span>
+   <span class="tk-stub"><span>${c.stub}</span></span>
+ </button>`).join('');
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-go]'); if(!b) return; open(b.dataset.go);
+});
+document.getElementById('back').addEventListener('click',()=>{
+  stopAll();
+  document.getElementById('page').hidden=true;
+  document.getElementById('cover').hidden=false;
+  document.getElementById('back').classList.remove('on');
+  document.documentElement.style.setProperty('--acc','var(--brave)');
+  document.documentElement.style.setProperty('--acc-t','var(--brave-t)');
+  window.scrollTo({top:0});
+});
+
+/* ---------------- PAGES ---------------- */
+function open(id){
+  stopAll();
+  const P=document.getElementById('page');
+  let theme='brave';
+  if(id.startsWith('s')){ const s=S.find(x=>'s'+x.id===id); theme=s.theme;
+    P.innerHTML = s.kind==='drillq' ? drillqPage(s)
+                : s.kind==='dialogue' ? dialoguePage(s)
+                : s.kind==='task' ? taskPage(s)
+                : s.kind==='compare' ? comparePage(s)
+                : s.kind==='pair' ? pairPage(s) : storyPage(s); }
+  else if(id==='retell'){ theme='win'; P.innerHTML=retellPage(); }
+  else { theme='focus'; P.innerHTML=drillPage(); }
+  document.documentElement.style.setProperty('--acc',`var(--${theme})`);
+  document.documentElement.style.setProperty('--acc-t',`var(--${theme}-t)`);
+  document.getElementById('cover').hidden=true;
+  P.hidden=false;
+  document.getElementById('back').classList.add('on');
+  wire(P, id);
+  window.scrollTo({top:0});
+}
+
+function howto(s){
+  if(!s.howto) return '';
+  return `<div class="howto"><div class="ht">Como fazer — na ordem</div><ol>${
+    s.howto.map(h=>`<li>${h}</li>`).join('')}</ol></div>`;
+}
+
+function pairPage(s){
+  const block=(lines,tag)=>lines.map((l,i)=>`
+      <div class="dline${l.w==='You'?' you':''}" data-v="${tag}" data-i="${i}">
+        <span class="dw">${l.w==='You'?'Você':esc(l.w)}</span>
+        <span class="dt">— ${esc(l.t)}</span>
+        ${l.note?`<span class="dn">${esc(l.note)}</span>`:''}
+      </div>`).join('');
+  return `
+  <div class="shead">
+    <div class="tk-kick">Bloco ${s.num}</div>
+    <h1>${esc(s.title)}</h1>
+    <p>${esc(s.sub)}</p>
+  </div>
+  ${howto(s)}
+  <div class="vhead va2">
+    <span class="vtag">Versão A</span>
+    <button class="play playa" data-playv="a">${PLAYICO} Ouvir versão A</button>
+    <button class="ghost gha" data-showv="a" aria-pressed="false">Mostrar texto</button>
+  </div>
+  <div class="text blur va2box" data-vbox="a">${block(s.a,'a')}</div>
+
+  <div class="vhead">
+    <span class="vtag">Versão B</span>
+    <button class="play" data-playv="b">${PLAYICO} Ouvir versão B</button>
+    <button class="ghost" data-solov="b">Modo resposta — você fala</button>
+    <button class="ghost" data-showv="b" aria-pressed="false">Mostrar texto</button>
+  </div>
+  <div class="text blur" data-vbox="b">${block(s.b,'b')}</div>
+
+  <div class="whybox" style="margin-top:16px;">
+    <button class="ghost" data-whyp>O que mudou</button>
+    <span data-whypbox hidden></span>
+  </div>
+  <div class="foot"><span>${s.a.length} + ${s.b.length} falas</span><span>Ouça A, ouça B, diga B</span></div>`;
+}
+
+function comparePage(s){
+  return `
+  <div class="shead">
+    <div class="tk-kick">Bloco ${s.num}</div>
+    <h1>${esc(s.title)}</h1>
+    <p>${esc(s.sub)}</p>
+  </div>
+  ${howto(s)}
+  <div style="margin-top:20px;">
+  ${s.items.map((it,i)=>`
+    <div class="cmp" data-ci2="${i}">
+      <div class="m">${esc(it.m)}</div>
+      <button class="vrow va" data-say="${esc(it.a)}"><span class="lab">A</span><span class="vt">${esc(it.a)}</span></button>
+      <button class="vrow vb" data-say="${esc(it.b)}"><span class="lab">B</span><span class="vt">${esc(it.b)}</span></button>
+      <div class="whybox">
+        <button class="ghost" data-why="${i}">O que mudou</button>
+        <span data-whybox="${i}" hidden></span>
+      </div>
+    </div>`).join('')}
+  </div>
+  <div class="foot"><span>${s.items.length} comparações</span><span>Diga a B em voz alta antes de ler o porquê</span></div>`;
+}
+
+function taskPage(s){
+  return `
+  <div class="shead">
+    <div class="tk-kick">Bloco ${s.num}</div>
+    <h1>${esc(s.title)}</h1>
+    <p>${esc(s.sub)}</p>
+  </div>
+  ${howto(s)}
+  <div style="margin-top:20px;">
+  ${s.items.map((it,i)=>`
+    <div class="task" data-ti="${i}">
+      ${/(^|\s)(de|da|do|que|voc\u00ea|uma|um|no|na|com|para|sem|os|as|pelo|pela|seu|sua|n\u00e3o|em|ao)(\s|$)/i.test(it.p)
+        ? `<div class="p">${esc(it.p)}</div>`
+        : `<button class="stage" data-say="${esc(it.p)}" style="margin:0;">${SPK}<span style="font-family:'Lora',serif;font-size:20px;flex:1;text-align:left;">${esc(it.p)}</span></button>`}
+      <div class="rev">
+        <button class="ghost" data-treveal="${i}">${s.revealLabel||"Ver uma versão boa"}</button>
+        <span data-tbox="${i}" hidden></span>
+      </div>
+    </div>`).join('')}
+  </div>
+  <div class="foot"><span>${s.items.length} itens</span><span>Fale antes de revelar</span></div>`;
+}
+
+function dialoguePage(s){
+  return `
+  <div class="shead">
+    <div class="tk-kick">Bloco ${s.num}</div>
+    <h1>${esc(s.title)}</h1>
+    <p>${esc(s.sub)}</p>
+  </div>
+  ${howto(s)}
+  <div class="player">
+    <button class="play" data-playall>${PLAYICO} Ouvir a conversa inteira</button>
+    <button class="ghost" data-solo>Modo resposta — você fala</button>
+    <button class="ghost" data-reveal aria-pressed="false">Mostrar texto</button>
+    <span class="pnote">Ouça inteira com o texto escondido. Depois use o <b>Modo resposta</b>: só a recepção fala, e você diz as falas dela nos silêncios.</span>
+  </div>
+  <div class="text blur" data-text style="padding:26px 30px;">
+    ${s.lines.map((l,i)=>`
+      <div class="dline${l.w==='You'?' you':''}" data-i="${i}">
+        <span class="dw">${l.w==='You'?'Você':esc(l.w)}</span>
+        <span class="dt">— ${esc(l.t)}</span>
+        ${l.note?`<span class="dn">${esc(l.note)}</span>`:''}
+      </div>`).join('')}
+  </div>
+  <div class="ph">Answer out loud, in full sentences</div>
+  <div class="qs">${s.qs.map((q,i)=>`
+    <button class="qc" data-say="${esc(q)}"><span class="qn">0${i+1}</span><span class="qt">${esc(q)}</span></button>`).join('')}</div>
+  <div class="foot"><span>${s.lines.length} falas</span><span>Ouvir antes de ler</span></div>`;
+}
+
+function drillqPage(s){
+  return `
+  <div class="shead">
+    <div class="tk-kick">Bloco ${s.num}</div>
+    <h1>${esc(s.title)}</h1>
+    <p>${esc(s.sub)}</p>
+  </div>
+  ${howto(s)}
+  <div class="player">
+    <button class="play" data-playall>${PLAYICO} Ouvir todas, em ordem</button>
+    <button class="ghost" data-shuffle>Modo embaralhado</button>
+    <button class="ghost" data-revealall aria-pressed="false">Mostrar respostas</button>
+    <span class="pnote">Siga as instruções acima, na ordem. Você pode repetir cada item quantas vezes quiser.</span>
+  </div>
+  <div style="margin-top:18px;">
+  ${s.items.map((it,i)=>`
+    <div class="drill" data-qi="${i}" style="padding:20px 24px;margin-bottom:12px;">
+      <div class="stage" data-stage style="margin:0;">${SPK}<span class="stage-txt" style="font-size:21px;">${esc(it.q)}</span></div>
+      <div class="ans" data-ans hidden style="margin-top:12px;padding-left:48px;font-family:'Lora',serif;font-size:19px;color:var(--acc);font-weight:600;">${esc(it.a)}</div>
+    </div>`).join('')}
+  </div>
+  <div class="foot"><span>${s.items.length} itens</span><span>Responda antes de revelar</span></div>`;
+}
+
+function storyPage(s){
+  const body=s.paras.map((p,pi)=>'<p>'+p.map((sent,si)=>
+    `<span class="sent" data-p="${pi}" data-s="${si}">${markUp(sent,s.marks)}</span>`).join(' ')+'</p>').join('');
+  return `
+  <div class="shead">
+    <div class="tk-kick">Story ${s.num}</div>
+    <h1>${esc(s.title)}</h1>
+    <p>${esc(s.sub)}</p>
+  </div>
+  ${howto(s)}
+  <div class="player">
+    <button class="play" data-playall>${PLAYICO} Ouvir a história</button>
+    <button class="ghost" data-reveal aria-pressed="false">Mostrar texto</button>
+    <span class="pnote">Ouça duas vezes com o texto escondido. Só depois revele — e aí toque em qualquer frase para ouvir só ela.</span>
+  </div>
+  <div class="text blur" data-text>${body}</div>
+  <div class="ph">Responda em voz alta, com frase inteira</div>
+  <div class="qs">${s.qs.map((q,i)=>`
+    <button class="qc" data-say="${esc(q)}"><span class="qn">0${i+1}</span><span class="qt">${esc(q)}</span></button>`).join('')}</div>
+  <div class="foot"><span>Story ${s.num} · ${esc(s.title)}</span><span>Ouvir &gt; ler</span></div>`;
+}
+
+function retellPage(){
+  return `
+  <div class="shead">
+    <div class="tk-kick">Your turn</div>
+    <h1>Sozinha, no balcão</h1>
+    <p>Eu sou a atendente do balcão de bagagem. Sua mala não saiu na esteira. Você conduz do primeiro "excuse me" ao "thank you".</p>
+  </div>
+  <div class="two" style="margin-top:26px;">
+    <div class="pane acc">
+      <h3>O que você vai ouvir</h3>
+      <ul>
+        <li><button data-say="Did your bag not come out?">Did your bag not come out?</button></li>
+        <li><button data-say="Do you have your baggage tag?">Do you have your baggage tag?</button></li>
+        <li><button data-say="It looks like it didn't make the connection in Atlanta.">It didn't make the connection.</button></li>
+        <li><button data-say="It's booked on the next flight down tonight.">It's on the next flight down.</button></li>
+        <li><button data-say="I'll give you a reference number.">I'll give you a reference number.</button></li>
+        <li><button data-say="You can buy essentials and claim it back. Keep the receipts.">Buy essentials and claim it back.</button></li>
+      </ul>
+    </div>
+    <div class="pane">
+      <h3>Os quatro passos</h3>
+      <div class="note"><b>1.</b> Diga o fato — <i>I waited until the belt stopped and it never came out.</i></div>
+      <div class="note" style="margin-top:10px;"><b>2.</b> Entregue a etiqueta — <i>Here's my baggage tag.</i></div>
+      <div class="note" style="margin-top:10px;"><b>3.</b> Peça o rastreio e o protocolo — <i>Can you trace it? Can I get a reference number?</i></div>
+      <div class="note" style="margin-top:10px;"><b>4.</b> Resolva hoje — <i>What am I supposed to do in the meantime?</i></div>
+      <div class="note" style="margin-top:14px;color:#8A6D14;"><b>Nada disso precisa sair perfeito.</b> Hoje é introdução — a gente destrincha nas próximas.</div>
+    </div>
+  </div>
+  <div class="foot"><span>Produção · introdução</span><span>Pergunte, não reclame</span></div>`;
+}
+
+function drillPage(){
+  return `
+  <div class="shead">
+    <div class="tk-kick">Their words, your mouth</div>
+    <h1>Direto do texto</h1>
+    <p>Cada frase saiu de uma das histórias. A frase é longa; a troca é uma só. Diga em voz alta <b>antes</b> de ouvir.</p>
+  </div>
+  <div style="margin-top:26px;">
+  ${DRILLS.map((d,i)=>`
+    <div class="drill" data-drill="${i}">
+      <div class="src">${d.src}</div>
+      <div class="stage" data-stage>${SPK}<span class="stage-txt" data-txt>${hlBase(d)}</span></div>
+      <div class="cues">${d.cues.map((c,ci)=>`<button class="cue" data-ci="${ci}" aria-pressed="false">${esc(c.c)}</button>`).join('')}</div>
+      <div class="hint">Toque na frase para ouvir de novo · toque na deixa marcada para voltar à base.</div>
+    </div>`).join('')}
+  </div>
+  <div class="foot"><span>6 drills · 24 frases</span><span>Frase inteira, sempre</span></div>`;
+}
+
+/* ---------------- WIRING ---------------- */
+function wire(root, id){
+  root.querySelectorAll('[data-say]').forEach(el=>
+    el.addEventListener('click',()=>say(el.dataset.say, el)));
+
+  const dl=root.querySelectorAll('.dline');
+  if(dl.length && root.querySelector('[data-playall]') && !root.querySelector('[data-vbox]')){
+    const s=S.find(x=>'s'+x.id===id);
+    const txt=root.querySelector('[data-text]');
+    dl.forEach(el=>el.addEventListener('click',()=>{
+      if(txt.classList.contains('blur')) return;
+      say(s.lines[+el.dataset.i].t, el);
+    }));
+    root.querySelector('[data-playall]').addEventListener('click',()=>{
+      sayAll([...dl].map(el=>({text:s.lines[+el.dataset.i].t, el})));
+    });
+    const solo=root.querySelector('[data-solo]');
+    if(solo) solo.addEventListener('click',()=>{
+      const seq=[];
+      [...dl].forEach(el=>{
+        const L=s.lines[+el.dataset.i];
+        if(L.w==='You') seq.push({gap:Math.max(2600, L.t.length*62), el});
+        else seq.push({text:L.t, el});
+      });
+      sayAll(seq);
+    });
+    const rev=root.querySelector('[data-reveal]');
+    rev.addEventListener('click',()=>{
+      const on=txt.classList.toggle('blur');
+      rev.setAttribute('aria-pressed', String(!on));
+      rev.textContent = on ? 'Mostrar texto' : 'Esconder texto';
+    });
+  }
+
+  const txt=root.querySelector('[data-text]:not(:has(.dline))');
+  if(txt){
+    const s=S.find(x=>'s'+x.id===id);
+    const sents=[...txt.querySelectorAll('.sent')];
+    root.querySelector('[data-playall]').addEventListener('click',()=>{
+      sayAll(sents.map(el=>({text:s.paras[+el.dataset.p][+el.dataset.s], el})));
+    });
+    const rev=root.querySelector('[data-reveal]');
+    rev.addEventListener('click',()=>{
+      const on=txt.classList.toggle('blur');
+      rev.setAttribute('aria-pressed', String(!on));
+      rev.textContent = on ? 'Mostrar texto' : 'Esconder texto';
+    });
+    sents.forEach(el=>el.addEventListener('click',()=>{
+      if(txt.classList.contains('blur')) return;
+      say(s.paras[+el.dataset.p][+el.dataset.s], el);
+    }));
+  }
+
+  const qEls=[...root.querySelectorAll('[data-qi]')];
+  if(qEls.length && root.querySelector('[data-playall]')){
+    const s=S.find(x=>'s'+x.id===id);
+    qEls.forEach(el=>{
+      const it=s.items[+el.dataset.qi];
+      const stage=el.querySelector('[data-stage]');
+      const ans=el.querySelector('[data-ans]');
+      stage.addEventListener('click',()=>{ say(it.q, stage); });
+      el.addEventListener('dblclick',()=>{ ans.hidden=!ans.hidden; });
+    });
+    root.querySelector('[data-playall]').addEventListener('click',()=>{
+      sayAll(qEls.map(el=>({text:s.items[+el.dataset.qi].q, el:el.querySelector('[data-stage]')})));
+    });
+    root.querySelector('[data-shuffle]').addEventListener('click',()=>{
+      const sh=[...qEls].sort(()=>Math.random()-0.5);
+      sayAll(sh.map(el=>({text:s.items[+el.dataset.qi].q, el:el.querySelector('[data-stage]')})));
+    });
+    const ra=root.querySelector('[data-revealall]');
+    ra.addEventListener('click',()=>{
+      const show = ra.getAttribute('aria-pressed')!=='true';
+      ra.setAttribute('aria-pressed', String(show));
+      ra.textContent = show ? 'Esconder respostas' : 'Mostrar respostas';
+      root.querySelectorAll('[data-ans]').forEach(a=>a.hidden=!show);
+    });
+  }
+
+  root.querySelectorAll('[data-playv]').forEach(btn=>{
+    const s=S.find(x=>'s'+x.id===id);
+    btn.addEventListener('click',()=>{
+      const v=btn.dataset.playv, lines=v==='a'?s.a:s.b;
+      const els=[...root.querySelectorAll(`[data-v="${v}"]`)];
+      sayAll(els.map(el=>({text:lines[+el.dataset.i].t, el})));
+    });
+  });
+  root.querySelectorAll('[data-solov]').forEach(btn=>{
+    const s=S.find(x=>'s'+x.id===id);
+    btn.addEventListener('click',()=>{
+      const lines=s.b, els=[...root.querySelectorAll('[data-v="b"]')];
+      sayAll(els.map(el=>{
+        const L=lines[+el.dataset.i];
+        return L.w==='You' ? {gap:Math.max(2600, L.t.length*62), el} : {text:L.t, el};
+      }));
+    });
+  });
+  root.querySelectorAll('[data-showv]').forEach(btn=>{
+    const box=root.querySelector(`[data-vbox="${btn.dataset.showv}"]`);
+    btn.addEventListener('click',()=>{
+      const on=box.classList.toggle('blur');
+      btn.setAttribute('aria-pressed', String(!on));
+      btn.textContent = on ? 'Mostrar texto' : 'Esconder texto';
+    });
+  });
+  root.querySelectorAll('[data-v]').forEach(el=>{
+    const s=S.find(x=>'s'+x.id===id);
+    el.addEventListener('click',()=>{
+      const box=el.closest('[data-vbox]');
+      if(box.classList.contains('blur')) return;
+      const lines=el.dataset.v==='a'?s.a:s.b;
+      say(lines[+el.dataset.i].t, el);
+    });
+  });
+  const wp=root.querySelector('[data-whyp]');
+  if(wp){
+    const s=S.find(x=>'s'+x.id===id);
+    wp.addEventListener('click',()=>{
+      const box=root.querySelector('[data-whypbox]');
+      box.hidden=false; box.innerHTML=`<div class="w">${s.why}</div>`;
+      wp.remove();
+    });
+  }
+
+  root.querySelectorAll('[data-why]').forEach(b=>{
+    const s=S.find(x=>'s'+x.id===id);
+    b.addEventListener('click',()=>{
+      const i=+b.dataset.why, box=root.querySelector(`[data-whybox="${i}"]`);
+      box.hidden=false;
+      box.innerHTML=`<div class="w">${s.items[i].why}</div>`;
+      b.remove();
+    });
+  });
+
+  root.querySelectorAll('[data-treveal]').forEach(b=>{
+    const s=S.find(x=>'s'+x.id===id);
+    b.addEventListener('click',()=>{
+      const i=+b.dataset.treveal, box=root.querySelector(`[data-tbox="${i}"]`);
+      box.hidden=false;
+      box.innerHTML=`<button class="stage" data-say="${esc(s.items[i].a)}" style="margin-top:10px;">${SPK}<span style="font-family:'Lora',serif;font-size:19px;color:var(--acc);font-weight:600;flex:1;text-align:left;">${esc(s.items[i].a)}</span></button>`;
+      b.remove();
+      const st=box.querySelector('[data-say]');
+      st.addEventListener('click',()=>say(st.dataset.say, st));
+      say(s.items[i].a, st);
+    });
+  });
+
+  root.querySelectorAll('[data-drill]:not([data-qi])').forEach(el=>{
+    const d=DRILLS[+el.dataset.drill];
+    const stage=el.querySelector('[data-stage]');
+    const t=el.querySelector('[data-txt]');
+    let showing=null;
+    const speak=()=>say(showing===null?d.base:d.cues[showing].f, stage);
+    stage.addEventListener('click',speak);
+    el.querySelectorAll('.cue').forEach(c=>c.addEventListener('click',()=>{
+      const ci=+c.dataset.ci;
+      if(showing===ci){ showing=null; t.innerHTML=hlBase(d);
+        c.setAttribute('aria-pressed','false'); speak(); return; }
+      showing=ci;
+      el.querySelectorAll('.cue').forEach(x=>x.setAttribute('aria-pressed',x===c));
+      t.innerHTML=diff(d.base,d.cues[ci].f);
+      speak();
+    }));
+  });
+}
+</script>
+</body>
+</html>
